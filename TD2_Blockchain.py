@@ -15,11 +15,11 @@ def GetChkSum(strData):
 	chksum = chksum	^ (int(str(int("04", 16)),10))
 	return chksum '''
 
-entropy=str(sc.randbits(128))
+entropy=sc.randbits(128)
 
 print(entropy)
 
-entropy_hash=hashlib.sha256(entropy.encode()).hexdigest()
+entropy_hash=hashlib.sha256(str(entropy).encode()).hexdigest()
 
 print(entropy_hash)
 #print(GetChkSum(entropy_hash))
@@ -31,5 +31,15 @@ scale = 16 ## equals to hexadecimal
 hashbin=bin(int(my_hexdata, scale))[2:]
 
 print(hashbin[0:4])
+
+bin_entropy=bin(entropy)[2:] #on converti l entropy en bin
+
+final_entropy=bin_entropy+hashbin[0:4] #on ajoute les 4 bits de checksum
+
+
+print(len(bin_entropy))
+print(len(final_entropy))
+
+L_segment=[]
 
 
