@@ -33,6 +33,7 @@ hashbin=bin(int(my_hexdata, scale))[2:]
 print(hashbin[0:4])
 
 bin_entropy=bin(entropy)[2:] #on converti l entropy en bin
+bin_entropy="0"*(128-len(str(bin_entropy)))+str(bin_entropy) #On ajoute des 0 si on a pas bien les 128bits
 
 final_entropy=bin_entropy+hashbin[0:4] #on ajoute les 4 bits de checksum
 
@@ -41,5 +42,18 @@ print(len(bin_entropy))
 print(len(final_entropy))
 
 L_segment=[]
+
+for k in range(0,128,11):
+    L_segment.append(final_entropy[k:k+11])
+
+Seed=""
+
+for k in range(12):
+    Seed+=liste_bip_39[int(L_segment[k],2)]+" "
+
+print(Seed)
+
+
+
 
 
