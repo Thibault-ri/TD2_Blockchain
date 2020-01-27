@@ -10,7 +10,7 @@ liste_bip_39 = ["abandon","ability","able","about","above","absent","absorb","ab
 def creation_seed(liste_bip_39):
     L_segment=[]
     entropy=sc.randbits(128)
-    print("Entropy sur 128 bits:"+str(entropy))
+    print("Entropy sur 128 bits:"+str(entropy)+"\n")
     bin_entropy=bin(entropy)[2:] #on converti l entropy en bin
     bin_entropy="0"*(128-len(str(bin_entropy)))+str(bin_entropy) #On ajoute des 0 si on a pas bien les 128bits
 
@@ -20,7 +20,7 @@ def creation_seed(liste_bip_39):
     hashbin=bin(int(my_hexdata, scale))[2:]
     
     final_entropy=bin_entropy+hashbin[0:4] #on ajoute les 4 bits de checksum
-    print("Entropy en binaire avec checksum:"+str(final_entropy))
+    print("Entropy en binaire avec checksum:"+str(final_entropy)+"\n")
     
     for k in range(0,128,11):
         L_segment.append(final_entropy[k:k+11])
@@ -29,7 +29,7 @@ def creation_seed(liste_bip_39):
     for k in range(12):
         Seed+=liste_bip_39[int(L_segment[k],2)]+" "
         Lmot.append(liste_bip_39[int(L_segment[k],2)])
-    print(Seed)
+    print(Seed+"\n \n")
     return(Seed,final_entropy,Lmot)
 
 def verif_dic(mot,liste_bip_39):
@@ -104,13 +104,14 @@ def bip_32():
     master_private_key=hashbin[0:256]
     master_chaincode=hashbin[256:512]
     print("La master private key est :"+master_private_key)
-    print("Le master chain code est :"+master_chaincode)
+    print("\nLe master chain code est :"+master_chaincode)
 
 
 fin=False
 while(not fin):   
-    print("Bonjour, vous souhaitez: \n 1-Générer une seed en BIP39 \n 2-Importer une seed en BIP39 \n 3-Importer une seed BIP32 la verfifier et afficher sa Master private key et son chaincode \n 4-Exit")
+    print("Bonjour, vous souhaitez: \n 1-Générer une seed en BIP39 \n 2-Importer une seed en BIP39 \n 3-Importer une seed BIP32 la verfifier et afficher sa Master private key et son chaincode \n 4-Exit \n")
     choix=input("Veuillez entrer le chiffre correspondant: ")
+    print("\n")
     if(choix=="1"):
         creation_seed(liste_bip_39)
     elif(choix=="2"):
