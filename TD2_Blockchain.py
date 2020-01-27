@@ -10,6 +10,7 @@ liste_bip_39 = ["abandon","ability","able","about","above","absent","absorb","ab
 def creation_seed(liste_bip_39):
     L_segment=[]
     entropy=sc.randbits(128)
+    print("Entropy sur 128 bits:"+str(entropy))
     bin_entropy=bin(entropy)[2:] #on converti l entropy en bin
     bin_entropy="0"*(128-len(str(bin_entropy)))+str(bin_entropy) #On ajoute des 0 si on a pas bien les 128bits
 
@@ -19,13 +20,17 @@ def creation_seed(liste_bip_39):
     hashbin=bin(int(my_hexdata, scale))[2:]
     
     final_entropy=bin_entropy+hashbin[0:4] #on ajoute les 4 bits de checksum
+    print("Entropy en binaire avec checksum:"+str(final_entropy))
+    
     for k in range(0,128,11):
         L_segment.append(final_entropy[k:k+11])
     Seed=""
+    Lmot=[]
     for k in range(12):
         Seed+=liste_bip_39[int(L_segment[k],2)]+" "
-
-    return(Seed)
+        Lmot.append(liste_bip_39[int(L_segment[k],2)])
+    print(Seed)
+    return(Seed,final_entropy,Lmot)
 
 def verif_dic(mot,liste_bip_39):
     indice=-1
@@ -55,11 +60,11 @@ def entree_seed():
                 break
     for i in range(12):
         mot_bin=bin(verif_dic(l_mots[i],liste_bip_39))[2:]
-        mot_bin="0"*(8-len(str(mot_bin)))+str(mot_bin)
+        mot_bin="0"*(11-len(str(mot_bin)))+str(mot_bin)
         seed_bin+=mot_bin
     print(seed_bin[0:128])
     
-print(creation_seed(liste_bip_39))
+
 
 def bip_32():
     l_mots=["","","","","","","","","","","",""]
@@ -80,8 +85,17 @@ def bip_32():
                 break
     for i in range(12):
         mot_bin=bin(verif_dic(l_mots[i],liste_bip_39))[2:]
-        mot_bin="0"*(8-len(str(mot_bin)))+str(mot_bin)
+        mot_bin="0"*(11-len(str(mot_bin)))+str(mot_bin)
         seed_bin+=mot_bin
+    entropy_hash2=hashlib.sha256(str(seed_bin[0:128]).encode()).hexdigest()
+    my_hexdata2 =entropy_hash2
+    scale2 = 16 ## equals to hexadecimal
+    hashbin2=bin(int(my_hexdata2, scale2))[2:]
+    if(hashbin2[0:4]==seed_bin[128:132]):
+        print("La seed est correct")
+    else:
+        print("La seed est incorrect")
+    
     entropy_hash=hashlib.sha512(str(seed_bin[0:128]).encode()).hexdigest()
     my_hexdata =entropy_hash
     scale = 16 ## equals to hexadecimal
@@ -89,12 +103,22 @@ def bip_32():
     hashbin="0"*(512-len(str(hashbin)))+str(hashbin)
     master_private_key=hashbin[0:256]
     master_chaincode=hashbin[256:512]
-    print(hashbin)
-    print(len(hashbin))
-
-bip_32()
+    print("La master private key est :"+master_private_key)
+    print("Le master chain code est :"+master_chaincode)
 
 
+fin=False
+while(not fin):   
+    print("Bonjour, vous souhaitez: \n 1-Générer une seed en BIP39 \n 2-Importer une seed en BIP39 \n 3-Importer une seed BIP32 la verfifier et afficher sa Master private key et son chaincode \n 4-Exit")
+    choix=input("Veuillez entrer le chiffre correspondant: ")
+    if(choix=="1"):
+        creation_seed(liste_bip_39)
+    elif(choix=="2"):
+        entree_seed()
+    elif(choix=="3"):
+        bip_32()
+    elif(choix=="4"):
+        fin=True
 
 
 
